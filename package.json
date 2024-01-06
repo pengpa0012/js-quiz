@@ -1,0 +1,22 @@
+{
+  "name": "js-quiz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "websocket.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pengpa0012/js-quiz.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pengpa0012/js-quiz/issues"
+  },
+  "homepage": "https://github.com/pengpa0012/js-quiz#readme",
+  "dependencies": {
+    "ws": "^8.16.0"
+  }
+}
