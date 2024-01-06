@@ -1,7 +1,8 @@
 const socket = new WebSocket('ws://localhost:3000')
+const chatInput = document.querySelector(".chat-input")
 
 socket.addEventListener('open', (event) => {
-  console.log('Connected to the server')
+  console.log('Connected to the server', event)
 })
 
 socket.addEventListener('message', (event) => {
@@ -14,11 +15,17 @@ socket.addEventListener('close', (event) => {
 })
 
 function sendResponse(response) {
-  socket.onopen = () => {
-    socket.send(response)
+  if (socket.readyState === WebSocket.OPEN) {
+    socket.send(response);
+  } else {
+    console.error('WebSocket connection is not open');
   }
 }
 
-sendResponse('Option A')
-
+chatInput.addEventListener("keypress", (e) => {
+  if (e.key === "Enter" && e.target.value) {
+    sendResponse(e.target.value)
+    chatInput.value = ""
+  }
+})
 
