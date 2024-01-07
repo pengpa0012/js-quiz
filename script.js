@@ -1,5 +1,6 @@
 const socket = new WebSocket('ws://localhost:3000')
 const chatInput = document.querySelector(".chat-input")
+const questionText = document.querySelector(".question")
 
 socket.addEventListener('open', (event) => {
   console.log('Connected to the server', event)
@@ -7,7 +8,7 @@ socket.addEventListener('open', (event) => {
 
 socket.addEventListener('message', (event) => {
   const question = JSON.parse(event.data)
-  console.log(`Received question: ${question.text}`)
+  questionText.textContent = question.question
 })
 
 socket.addEventListener('close', (event) => {
