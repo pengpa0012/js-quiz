@@ -37,9 +37,7 @@ wss.on('connection', (ws) => {
 
   if (players.length > 1) {
     broadCastAllPlayers()
-    setTimeout(() => {
-      broadcastQuestion(questions[0])
-    }, 5000)
+    broadcastQuestion(questions[0])
   } 
 
   // Handle messages from players
@@ -52,11 +50,13 @@ wss.on('connection', (ws) => {
     console.log('Player disconnected')
     // Handle player disconnection
     players = players.filter(player => player.user !== ws)
+    broadCastAllPlayers()
   })
 })
 
 // Broadcast a message to all connected players
 function broadCastAllPlayers() {
+  console.log("Total Players:", players.length)
   const playersList = JSON.stringify({ players: players.map(player => ({ id: player.id }))})
   players.forEach((player) => player.user.send(playersList))
 }
