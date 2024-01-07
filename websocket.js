@@ -33,14 +33,19 @@ wss.on('connection', (ws) => {
   console.log('Player connected')
   players.push({user: ws, id: playerId})
   console.log("Total Players:", players.length)
+
+
   if (players.length > 1) {
-    broadcastQuestion(questions[0])
+    broadCastAllPlayers()
+    setTimeout(() => {
+      broadcastQuestion(questions[0])
+    }, 5000)
   } 
 
   // Handle messages from players
   ws.on('message', (message) => {
     console.log(`Received message: ${message}, ${playerId}`)
-    // Handle player responses and game logic
+    // Handle player responses and game logic (Check if answer is right)
   })
 
   ws.on('close', () => {
@@ -49,6 +54,12 @@ wss.on('connection', (ws) => {
     players = players.filter(player => player.user !== ws)
   })
 })
+
+// Broadcast a message to all connected players
+function broadCastAllPlayers() {
+  const playersList = JSON.stringify({ players: players.map(player => ({ id: player.id }))})
+  players.forEach((player) => player.user.send(playersList))
+}
 
 // Broadcast a question to all connected players
 function broadcastQuestion(question) {
