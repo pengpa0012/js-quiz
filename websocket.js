@@ -5,6 +5,7 @@ const wss = new WebSocket.Server({ server })
 
 let players = []
 let nextId = 1
+let currentQuestion = 0
 const questions = [
   {
     question: " What is the largest desert in the world?",
@@ -37,13 +38,19 @@ wss.on('connection', (ws) => {
 
   if (players.length > 1) {
     broadCastAllPlayers()
-    broadcastQuestion(questions[0])
+    broadcastQuestion(questions[currentQuestion])
   } 
 
   // Handle messages from players
   ws.on('message', (message) => {
+    if(message == questions[currentQuestion].answer) {
+      currentQuestion++
+      broadcastQuestion(questions[currentQuestion])
+      console.log(`Correct Answer: ${message}, Player ID: ${playerId}`)
+      // Increment player points
+    }
+   
     console.log(`Received message: ${message}, ${playerId}`)
-    // Handle player responses and game logic (Check if answer is right)
   })
 
   ws.on('close', () => {
