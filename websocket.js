@@ -44,7 +44,12 @@ wss.on('connection', (ws) => {
   // Handle messages from players
   ws.on('message', (message) => {
     if(message == questions[currentQuestion].answer) {
-      currentQuestion++
+      // Return to question 1 if all question already answered
+      if(currentQuestion == questions.length - 1) {
+        currentQuestion = 0
+      } else {
+        currentQuestion++
+      }
       broadcastQuestion(questions[currentQuestion])
       console.log(`Correct Answer: ${message}, Player ID: ${playerId}`)
       // Increment player points
