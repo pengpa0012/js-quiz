@@ -12,12 +12,12 @@ socket.addEventListener('open', (event) => {
 socket.addEventListener('message', (event) => {
   const data = JSON.parse(event.data)
   questionText.textContent = data.question
-
-  if(data.players !== undefined && data.players.length !== playerLists.children.length) {
+  if(data.players !== undefined) {
     playerLists.innerHTML = ""
     for(let i = 0; i < data.players?.length; i++) {
       const playerTemplate = `<div class="p-4 border rounded-md min-w-[150px] text-center">
         <h2 class="text-2xl">Player ${data.players[i].id}</h2>
+        <h2 class="text-2xl">Points: ${data.players[i].points}</h2>
       </div>
       `
       playerLists.innerHTML += playerTemplate

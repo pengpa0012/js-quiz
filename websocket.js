@@ -32,26 +32,34 @@ const questions = [
 wss.on('connection', (ws) => {
   let playerId = nextId++
   console.log('Player connected')
-  players.push({user: ws, id: playerId})
+  players.push({user: ws, id: playerId, points: 0})
   console.log("Total Players:", players.length)
 
 
   if (players.length > 1) {
-    broadCastAllPlayers()
+    broadCastPlayersStat()
     broadcastQuestion(questions[currentQuestion])
   } 
 
   // Handle messages from players
   ws.on('message', (message) => {
     if(message == questions[currentQuestion].answer) {
+
+      // Increment player points who got the answer
+      const playerIndex = players.findIndex(el => el.user == ws)
+      players[playerIndex].points += 1
+      broadCastPlayersStat()
+
       // Return to question 1 if all question already answered
       if(currentQuestion == questions.length - 1) {
         currentQuestion = 0
       } else {
         currentQuestion++
       }
+      // Broadcast a timeout before sending new question
+      // Add Duration on question
       broadcastQuestion(questions[currentQuestion])
-      console.log(`Correct Answer: ${message}, Player ID: ${playerId}`)
+      console.log(`Correct Answer: ${message}, Player ID: ${playerId}, Player Points: ${players[playerIndex].points}`)
       // Increment player points
     }
    
@@ -62,14 +70,14 @@ wss.on('connection', (ws) => {
     console.log('Player disconnected')
     // Handle player disconnection
     players = players.filter(player => player.user !== ws)
-    broadCastAllPlayers()
+    broadCastPlayersStat()
   })
 })
 
 // Broadcast a message to all connected players
-function broadCastAllPlayers() {
+function broadCastPlayersStat() {
   console.log("Total Players:", players.length)
-  const playersList = JSON.stringify({ players: players.map(player => ({ id: player.id }))})
+  const playersList = JSON.stringify({ players: players.map(player => ({ id: player.id, points: player.points }))})
   players.forEach((player) => player.user.send(playersList))
 }
 
